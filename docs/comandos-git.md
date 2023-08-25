@@ -33,8 +33,3 @@ git add .
 git commit -m "proyecto base Laravel"
 git push origin master
 ```
------------------
-| T1  |  T2  |  T3|
-|-----|------|----|
-| v1  |  v2  | v3 |
-|-----|------|----|
