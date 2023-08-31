@@ -3,7 +3,38 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "name": "cristian",
+    "name": "admin",
+    "email": "admin@mail.com",
+    "password": "admin54321"
+}
+
+### LOGIN
+POST http://127.0.0.1:8000/api/v1/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@mail.com",
+    "password": "admin54321"
+}
+
+### LOGIN
+POST http://127.0.0.1:8000/api/v1/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
     "email": "cristian@mail.com",
     "password": "cristian54321"
 }
+
+### PERFIL
+GET http://127.0.0.1:8000/api/v1/auth/profile
+Accept: application/json
+Authorization: Bearer 9|laravel_sanctum_2yZhC7pgqaOKmDBkulD73TLIlfnTj1SILc20G5160d63fb85
+
+
+### LOGOUT
+POST http://127.0.0.1:8000/api/v1/auth/logout
+Accept: application/json
+Authorization: Bearer 8|laravel_sanctum_37CeEBIr3p3Dm5WUbDM0k5aNsPzQKwRzq88xz51g632da594
