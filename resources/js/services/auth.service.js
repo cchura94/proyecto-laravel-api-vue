@@ -7,3 +7,7 @@ export function login(datos) {
 export function registro(datos) {
     return axios.post("/v1/auth/register", datos);
 }
+
+export function obtenerPerfil() {
+    return axios.get("/v1/auth/profile");
+}
