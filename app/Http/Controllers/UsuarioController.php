@@ -11,10 +11,18 @@ class UsuarioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // listar
-        $usuarios = User::get();
+        if($request->q){
+            // buscar
+            $usuarios = User::where("name", "like", "%$request->q%")
+                                ->orWhere("email", "like", "%$request->q%")
+                                ->get();
+        }else{
+
+            $usuarios = User::get();
+        }
 
         return response()->json($usuarios, 200);
     }
@@ -57,8 +65,7 @@ class UsuarioController extends Controller
         // validar
         $request->validate([
             "name" => "required",
-            "email" => "required|email|unique:users,email,$id",
-            "password" => "required"
+            "email" => "required|email|unique:users,email,$id"
         ]);
 
         $usuario = User::find($id);
