@@ -5,6 +5,7 @@ import Login from '../views/auth/Login.vue'
 import Registro from '../views/auth/Register.vue'
 import Perfil from '../views/admin/Profile.vue'
 import Usuario from '../views/admin/Usuario.vue'
+import AppLayout from '@/layout/AppLayout.vue'
 
 const routes = [
     {
@@ -30,19 +31,24 @@ const routes = [
         meta: {requireAuth: true}
     },
     {
-        path: '/perfil',
-        component: Perfil,
-        name: 'Perfil',
-        meta: {requireAuth: true}
-
-    },
-    {
-        path: '/usuario',
-        component: Usuario,
-        name: 'Usuario',
-        meta: {requireAuth: true}
-
+        path: '/admin',
+        component: AppLayout,
+        children: [
+            {
+                path: '/perfil',
+                component: Perfil,
+                name: 'Perfil',
+                meta: {requireAuth: true}
+            },
+            {
+                path: '/usuario',
+                component: Usuario,
+                name: 'Usuario',
+                meta: {requireAuth: true}
+            }
+        ]
     }
+    
 
 ]
 
