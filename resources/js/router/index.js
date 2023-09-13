@@ -6,42 +6,50 @@ import Registro from '../views/auth/Register.vue'
 import Perfil from '../views/admin/Profile.vue'
 import Usuario from '../views/admin/Usuario.vue'
 import AppLayout from '@/layout/AppLayout.vue'
+import Landing from '@/views/landing/Landing.vue'
 
 const routes = [
     {
         path: '/',
-        name: 'inicio',
-        component: Inicio
-    },
-    {
-        path: '/blog',
-        name: 'blog',
-        component: Blog
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: Login,
-        meta: {redirectIfAuth: true}
-    },
-    {
-        path: '/registro',
-        component: Registro,
-        name: 'Registro',
-        meta: {requireAuth: true}
+        component: Landing,
+        children: [
+
+            {
+                path: '/',
+                name: 'inicio',
+                component: Inicio
+            },
+            {
+                path: '/blog',
+                name: 'blog',
+                component: Blog
+            },
+            {
+                path: '/login',
+                name: 'Login',
+                component: Login,
+                meta: {redirectIfAuth: true}
+            },
+            {
+                path: '/registro',
+                component: Registro,
+                name: 'Registro',
+                meta: {requireAuth: true}
+            },
+        ]
     },
     {
         path: '/admin',
         component: AppLayout,
         children: [
             {
-                path: '/perfil',
+                path: '/admin/perfil',
                 component: Perfil,
                 name: 'Perfil',
                 meta: {requireAuth: true}
             },
             {
-                path: '/usuario',
+                path: '/admin/usuario',
                 component: Usuario,
                 name: 'Usuario',
                 meta: {requireAuth: true}
