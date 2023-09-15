@@ -15,8 +15,8 @@ const model = ref([
         label: 'Gestión',
         items: [
             { label: 'Usuarios', icon: 'pi pi-fw pi-id-card', to: '/admin/usuario' },
-            { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
-            { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
+            { label: 'Categoria', icon: 'pi pi-fw pi-check-square', to: '/admin/categoria' },
+            { label: 'Producto', icon: 'pi pi-fw pi-bookmark', to: '/admin/producto' },
             { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
            
         ]

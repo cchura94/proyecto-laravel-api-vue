@@ -21,6 +21,11 @@ export const http = () => {
         },
         (error) => {
             // procesamos error 401, 403
+            if(error.response.status === 401){
+                localStorage.removeItem("access_token");
+
+                window.location = "/login"
+            }
     
             return Promise.reject(error);
         }

@@ -34,7 +34,7 @@
             token.value = data
             localStorage.setItem("access_token", data.access_token);
 
-            router.push("/perfil")
+            router.push("/admin/perfil")
 
         }
 </script>

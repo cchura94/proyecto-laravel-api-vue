@@ -5,6 +5,8 @@ import Login from '../views/auth/Login.vue'
 import Registro from '../views/auth/Register.vue'
 import Perfil from '../views/admin/Profile.vue'
 import Usuario from '../views/admin/Usuario.vue'
+import Categoria from '../views/admin/productos/Categoria.vue'
+import Producto from '../views/admin/productos/Producto.vue'
 import AppLayout from '@/layout/AppLayout.vue'
 import Landing from '@/views/landing/Landing.vue'
 
@@ -52,6 +54,18 @@ const routes = [
                 path: '/admin/usuario',
                 component: Usuario,
                 name: 'Usuario',
+                meta: {requireAuth: true}
+            },
+            {
+                path: '/admin/categoria',
+                component: Categoria,
+                name: 'Categoria',
+                meta: {requireAuth: true}
+            },
+            {
+                path: '/admin/producto',
+                component: Producto,
+                name: 'Producto',
                 meta: {requireAuth: true}
             }
         ]
