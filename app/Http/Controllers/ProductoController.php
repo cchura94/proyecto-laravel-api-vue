@@ -22,6 +22,7 @@ class ProductoController extends Controller
                                     ->paginate($limit);
         }else{
             $productos = Producto::orderBy($orderby, "desc")
+                                    ->with('categoria')
                                     ->paginate($limit);
         }
 
@@ -87,5 +88,35 @@ class ProductoController extends Controller
         $producto = Producto::find($id);
         $producto->delete();
         return response()->json(["message" => "Producto Eliminado"], 200);
+    }
+
+    public function actualizarImagen(Request $request, $id) {
+
+       /* $archivos = $request->imagenes;
+        foreach ($archivos as $img) {
+            $file = $img->file("imagen");
+            $direccion_imagen = time()."-".$file->getClientOriginalName();
+            $file->move("imagenes/", $direccion_imagen);
+            $direccion_imagen = "imagenes/".$direccion_imagen;
+
+            $prod = Producto::find($id);
+            $prod->imagen = $direccion_imagen;
+            $prod->update();
+        }
+        */
+
+        if($file = $request->file("imagen")){
+            $direccion_imagen = time()."-".$file->getClientOriginalName();
+            $file->move("imagenes/", $direccion_imagen);
+            $direccion_imagen = "imagenes/".$direccion_imagen;
+
+            $prod = Producto::find($id);
+            $prod->imagen = $direccion_imagen;
+            $prod->update();
+
+            return response()->json(["message" => "Imagen actualizada"], 200);
+        }
+
+        return response()->json(["message" => "No existe la imagen"], 422);
     }
 }

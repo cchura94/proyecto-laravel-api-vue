@@ -44,10 +44,13 @@ Route::prefix("v1/auth")->group(function(){
 
 Route::middleware('auth:sanctum')->group(function(){
     //  /usuario
+
+    Route::post("producto/{id}/actualizar-imagen", [ProductoController::class, "actualizarImagen"]);
+    
     Route::apiResource("usuario", UsuarioController::class);
     Route::apiResource("categoria", CategoriaController::class);
     Route::apiResource("producto", ProductoController::class);
     Route::apiResource("cliente", ClienteController::class);
     Route::apiResource("pedido", PedidoController::class);
-
+    
 });

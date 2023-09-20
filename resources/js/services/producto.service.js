@@ -16,4 +16,7 @@ export default {
     eliminar(id){
         return http().delete(`/producto/${id}`);
     },
+    actualizarImagen(id, formDatos){
+        return http().post(`/producto/${id}/actualizar-imagen`, formDatos);
+    },
 }

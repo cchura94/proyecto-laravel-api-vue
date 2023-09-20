@@ -12,6 +12,12 @@
             />
         </template>
         <template #end>
+            <Button
+                label="PDF"
+                icon="pi pi-upload"
+                severity="help"
+                @click="generarPdf()"
+            />
             <FileUpload
                 mode="basic"
                 accept="image/*"
@@ -50,7 +56,11 @@
                 <h4 class="m-0">Gestión Productos</h4>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
-                    <InputText placeholder="Buscar..." v-model="buscar" @keypress.enter="getProductos" />
+                    <InputText
+                        placeholder="Buscar..."
+                        v-model="buscar"
+                        @keypress.enter="getProductos"
+                    />
                 </span>
             </div>
         </template>
@@ -85,7 +95,7 @@
         </Column>
 
         <Column
-            field="categoria_id"
+            field="categoria.nombre"
             header="Categoria"
             sortable
             style="min-width: 10rem"
@@ -93,6 +103,14 @@
 
         <Column :exportable="false" style="min-width: 8rem">
             <template #body="slotProps">
+                <Button
+                    icon="pi pi-image"
+                    outlined
+                    rounded
+                    class="mr-2"
+                    severity="warning"
+                    @click="dialogImagenProducto(slotProps.data)"
+                />
                 <Button
                     icon="pi pi-pencil"
                     outlined
@@ -125,7 +143,7 @@
     <button @click="guardarProducto">Guardar</button>
     <br>
     -->
-    PRODUCTO: {{ productos }} TOTAL: {{ totalRecords }}
+    TOTAL: {{ totalRecords }}
 
     <Dialog
         v-model:visible="productDialog"
@@ -167,41 +185,18 @@
         <div class="field">
             <label class="mb-3">Categoria</label>
             <div class="formgrid grid">
-                <div class="field-radiobutton col-6">
+                <div
+                    class="field-radiobutton col-6"
+                    v-for="cat in categorias"
+                    :key="cat.id"
+                >
                     <RadioButton
-                        id="category1"
+                        :id="`category${cat.id}`"
                         name="category"
-                        value="1"
+                        :value="cat.id"
                         v-model="producto.categoria_id"
                     />
-                    <label for="category1">Accessories</label>
-                </div>
-                <div class="field-radiobutton col-6">
-                    <RadioButton
-                        id="category2"
-                        name="category"
-                        value="2"
-                        v-model="producto.categoria_id"
-                    />
-                    <label for="category2">Clothing</label>
-                </div>
-                <div class="field-radiobutton col-6">
-                    <RadioButton
-                        id="category3"
-                        name="category"
-                        value="3"
-                        v-model="producto.categoria_id"
-                    />
-                    <label for="category3">Electronics</label>
-                </div>
-                <div class="field-radiobutton col-6">
-                    <RadioButton
-                        id="category4"
-                        name="category"
-                        value="4"
-                        v-model="producto.categoria_id"
-                    />
-                    <label for="category4">Fitness</label>
+                    <label :for="`category${cat.id}`">{{ cat.nombre }}</label>
                 </div>
             </div>
         </div>
@@ -221,7 +216,7 @@
                 <label for="quantity">Cantidad</label>
                 <InputNumber
                     id="quantity"
-                    v-model="producto.cantidad"
+                    v-model="producto.stock"
                     integeronly
                 />
             </div>
@@ -241,11 +236,34 @@
             />
         </template>
     </Dialog>
+
+    <Dialog
+        v-model:visible="dialogImagen"
+        modal
+        header="Imagen"
+        :style="{ width: '50vw' }"
+    >
+        <FileUpload
+            customUpload
+            @uploader="actualizarImagen"
+            :multiple="false"
+            accept="image/*"
+            :maxFileSize="1000000"
+        >
+            <template #empty>
+                <p>Arrastrar y Soltar aquí, para subir archivos.</p>
+            </template>
+        </FileUpload>
+    </Dialog>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import productoService from "../../../services/producto.service";
+import categoriaService from "../../../services/categoria.service";
+
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const productos = ref([]);
 const producto = ref({
@@ -260,16 +278,21 @@ const submitted = ref(false);
 const productDialog = ref(false);
 const loading = ref(false);
 const lazyParams = ref({});
-const buscar = ref("")
+const buscar = ref("");
+
+const dialogImagen = ref(false);
+const categorias = ref([]);
+const dt = ref(null);
 
 onMounted(() => {
     getProductos();
+    getCategorias();
 });
 
 const onPage = (event) => {
     lazyParams.value = event;
     getProductos();
-}
+};
 
 const getProductos = async () => {
     try {
@@ -277,14 +300,23 @@ const getProductos = async () => {
         let page = lazyParams.value.page + 1;
         let limit = lazyParams.value.rows;
 
-        const { data } = await productoService.listar(page, limit, buscar.value);
+        const { data } = await productoService.listar(
+            page,
+            limit,
+            buscar.value
+        );
         productos.value = data.data;
         totalRecords.value = data.total;
 
-        loading.value = false
+        loading.value = false;
     } catch (error) {
         console.log("error: ", error);
     }
+};
+
+const getCategorias = async () => {
+    const { data } = await categoriaService.listar();
+    categorias.value = data;
 };
 
 const guardarProducto = async () => {
@@ -326,5 +358,80 @@ const formatCurrency = (value) => {
             currency: "USD",
         });
     return;
+};
+
+const dialogImagenProducto = (prod) => {
+    producto.value = prod;
+    dialogImagen.value = true;
+};
+
+const actualizarImagen = async (e) => {
+    console.log(e.files[0]);
+
+    try {
+        let fd = new FormData();
+        fd.append("imagen", e.files[0]);
+
+        const { data } = await productoService.actualizarImagen(
+            producto.value.id,
+            fd
+        );
+
+        producto.value = {
+            nombre: "",
+            precio: "",
+            stock: 0,
+            categoria_id: "",
+            descripcion: "",
+        };
+        dialogImagen.value = false;
+        getProductos();
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const generarPdf = () => {
+    const doc = new jsPDF();
+    const header = [["ID", "Nombre", "Precio", "Stock", "Categoría"]];
+
+    // Títulos
+    doc.setFontSize(18);
+    doc.text("Reporte de Productos", 20, 20);
+
+    // Espacio después del título
+    doc.setFontSize(12);
+    doc.text("A continuación se muestra la lista de productos:", 20, 30);
+
+    const data = productos.value.map((producto) => [
+        producto.id,
+        producto.nombre,
+        `$${producto.precio}`,
+        producto.stock,
+        producto.categoria.nombre,
+    ]);
+
+    const tableConfig = {
+        head: header,
+        body: data,
+        theme: "striped",
+        styles: { cellPadding: 5, fontSize: 12 },
+        startY: 40, // Posición inicial de la tabla (después de los títulos)
+    };
+
+    doc.autoTable(tableConfig);
+    // Convertir el documento a Blob
+    const pdfBlob = doc.output("blob");
+
+    // Crear una URL para el Blob
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // Abrir el PDF en una nueva pestaña
+    window.open(pdfUrl, "_blank");
+
+    // Liberar la URL cuando la pestaña se cierre
+    window.addEventListener("unload", () => {
+        URL.revokeObjectURL(pdfUrl);
+    });
 };
 </script>

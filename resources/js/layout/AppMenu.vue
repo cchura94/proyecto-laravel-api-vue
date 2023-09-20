@@ -22,10 +22,10 @@ const model = ref([
         ]
     },
     {
-        label: 'Prime Blocks',
+        label: 'Pedidos',
         items: [
-            { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
-            { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: 'https://www.primefaces.org/primeblocks-vue', target: '_blank' }
+            { label: 'Nuevo Pedido', icon: 'pi pi-fw pi-eye', to: '/admin/pedido/nuevo', badge: 'NEW' },
+            { label: 'Lista Pedidos', icon: 'pi pi-fw pi-globe', url: 'https://www.primefaces.org/primeblocks-vue', target: '_blank' }
         ]
     }
 ]);
