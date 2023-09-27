@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function(){
     //  /usuario
 
     Route::post("producto/{id}/actualizar-imagen", [ProductoController::class, "actualizarImagen"]);
+    Route::get("cliente/buscar", [ClienteController::class, "buscarCliente"]);
     
     Route::apiResource("usuario", UsuarioController::class);
     Route::apiResource("categoria", CategoriaController::class);
