@@ -13,6 +13,12 @@
         </template>
         <template #end>
             <Button
+                label="EXCEL"
+                icon="pi pi-upload"
+                severity="info"
+                @click="generarExcel()"
+            />
+            <Button
                 label="PDF"
                 icon="pi pi-upload"
                 severity="help"
@@ -159,7 +165,7 @@
             class="block m-auto pb-3"
         />
         <div class="field">
-            <label for="name">Name</label>
+            <label for="name">Nombre</label>
             <InputText
                 id="name"
                 v-model.trim="producto.nombre"
@@ -261,6 +267,7 @@
 import { ref, onMounted } from "vue";
 import productoService from "../../../services/producto.service";
 import categoriaService from "../../../services/categoria.service";
+// import XLSX from 'xlsx'
 
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -434,4 +441,21 @@ const generarPdf = () => {
         URL.revokeObjectURL(pdfUrl);
     });
 };
+
+/*
+const generarExcel = () => {
+    const data = [
+        ['NOmbre', 'Precio'],
+        ['Pruebas', 300],
+        ['Pruebas2', 400],
+        ['Pruebas3', 500]
+    ]
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+
+    XLSX.writeFile(wb, 'datos.xlsx');
+}
+*/
 </script>

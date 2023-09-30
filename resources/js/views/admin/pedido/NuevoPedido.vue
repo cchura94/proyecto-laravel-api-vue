@@ -88,7 +88,23 @@
                         <DataTable :value="carrito">
                             <Column field="nombre" header="NOMBRE"></Column>
                             <Column field="precio" header="PRECIO"></Column>
-                            <Column field="cantidad" header="C"></Column>
+                            <Column :exportable="false" header="C">
+                                <template #body="slotProps">
+                                    <Button
+                                            label="+"
+                                            severity="info"
+                                            class=""
+                                            @click="aumentar(slotProps.data)"
+                                        />
+                                        {{ slotProps.data.cantidad }}
+                                    <Button
+                                            label="-"
+                                            severity="info"
+                                            class=""
+                                            @click="reducir(slotProps.data)"
+                                        />
+                                </template>
+                            </Column>
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
                                     <Button
@@ -130,9 +146,14 @@
                 </div>
                 <div class="col-12">
                     <div
-                        class="text-center p-3 border-round-sm bg-primary font-bold"
+                        class="text-center p-1 border-round-sm bg-primary font-bold"
                     >
-                        Pedido
+                    <Button
+                            label="Guardar Pedido"
+                            severity="info"
+                            class=""
+                            @click="guardarPedido"
+                        />
                     </div>
                 </div>
             </div>
@@ -198,6 +219,7 @@
 import { ref, onMounted } from "vue";
 import productoService from "../../../services/producto.service";
 import clienteService from "../../../services/cliente.service"
+import pedidoService from "../../../services/pedido.service"
 
 const productos = ref([]);
 const totalRecords = ref(0);
@@ -264,13 +286,42 @@ const quitarCarrito = (prod) => {};
 
 const getCliente = async () => {
     const {data} = await clienteService.buscarCliente(buscarClie.value);
-
-    cliente_seleccionado.value = data;
+    if(data.id){
+        cliente_seleccionado.value = data;  
+    }
 };
 
 const guardarCliente = async () => {
     const {data} = await clienteService.guardar(cliente.value)
     cliente_seleccionado.value = data.cliente;
     visible.value = false;
+}
+
+const guardarPedido = async () => {
+    if(confirm("¿Está seguro de guardar el Pedido?")){
+
+        try {
+            const datos = {
+                cliente_id: cliente_seleccionado.value.id,
+                productos: carrito.value
+            }
+    
+            const {data} = await pedidoService.guardar(datos)
+            console.log(data)
+            cliente_seleccionado.value = null;
+            carrito.value = [];
+            
+        } catch (error) {
+            alert("Ocurrio un problema al registrare el pedido")
+        }
+
+    }
+}
+
+const aumentar = (prod) => {
+    prod.cantidad++;
+}
+const reducir = (prod) => {
+    prod.cantidad--;
 }
 </script>

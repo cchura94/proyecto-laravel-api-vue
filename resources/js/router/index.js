@@ -8,6 +8,7 @@ import Usuario from '../views/admin/Usuario.vue'
 import Categoria from '../views/admin/productos/Categoria.vue'
 import Producto from '../views/admin/productos/Producto.vue'
 import NuevoPedido from '../views/admin/pedido/NuevoPedido.vue'
+import ListaPedido from '../views/admin/pedido/ListaPedido.vue'
 import AppLayout from '@/layout/AppLayout.vue'
 import Landing from '@/views/landing/Landing.vue'
 
@@ -73,6 +74,12 @@ const routes = [
                 path: '/admin/pedido/nuevo',
                 component: NuevoPedido,
                 name: 'NuevoPedido',
+                meta: {requireAuth: true}
+            },
+            {
+                path: '/admin/pedido',
+                component: ListaPedido,
+                name: 'ListaPedido',
                 meta: {requireAuth: true}
             }
         ]
