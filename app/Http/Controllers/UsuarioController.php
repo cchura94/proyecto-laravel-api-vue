@@ -13,6 +13,7 @@ class UsuarioController extends Controller
      */
     public function index(Request $request)
     {
+        // $this->authorize("listar_usuario");
         // listar
         if($request->q){
             // buscar

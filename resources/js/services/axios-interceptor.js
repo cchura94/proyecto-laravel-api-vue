@@ -26,6 +26,11 @@ export const http = () => {
 
                 window.location = "/login"
             }
+
+            if(error.response.status === 403){
+                
+                alert("No autorizado");
+            }
     
             return Promise.reject(error);
         }

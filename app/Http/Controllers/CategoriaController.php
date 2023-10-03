@@ -12,6 +12,8 @@ class CategoriaController extends Controller
      */
     public function index()
     {
+        // $this->authorize("listar_categoria");
+
         $categorias = Categoria::get();
 
         return response()->json($categorias, 200);
@@ -22,6 +24,7 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
+        // $this->authorize("guardar_categoria");
         // validar
         $request->validate([
             "nombre" => "required|unique:categorias"
@@ -40,6 +43,7 @@ class CategoriaController extends Controller
      */
     public function show(string $id)
     {
+        // $this->authorize("mostrar_categoria");
         $categoria = Categoria::find($id);
 
         return response()->json($categoria, 200);
@@ -50,6 +54,7 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // $this->authorize("modificar_categoria");
         // validar
         $request->validate([
             "nombre" => "required|unique:categorias,nombre,$id"
@@ -67,6 +72,8 @@ class CategoriaController extends Controller
      */
     public function destroy(string $id)
     {
+        // $this->authorize("eliminar_categoria");
+
         $categoria = Categoria::find($id);
         $categoria->delete();
         return response()->json(["message" => "Categoria Eliminada"], 200);
